@@ -242,7 +242,7 @@ const scraperObject = {
             // Iterate through all terms
             for (term of termPossibilities) {
                 // Iterate through all subjects
-                for (course of coursePossibilities.slice(0, 1)) {
+                for (course of coursePossibilities) {
                     console.log("Term, course: " + term + ", " + course)
 
                     // Receive data
