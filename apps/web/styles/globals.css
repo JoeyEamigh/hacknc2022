@@ -12,7 +12,7 @@ body {
   }
   --header-height: calc(var(--banner-height) + var(--nav-height));
 
-  @apply bg-white flex h-full w-full flex-1;
+  @apply flex h-full w-full flex-1 bg-white;
 }
 
 .grecaptcha-badge {
@@ -24,7 +24,7 @@ body,
 body > div:first-child,
 div#__next,
 div#__next > * {
-  @apply font-inter text-white;
+  @apply font-inter;
   /* min-height: calc(100% - var(--header-height)); */
 }
 
