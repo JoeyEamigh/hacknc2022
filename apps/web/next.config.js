@@ -7,8 +7,14 @@ const myEnv = process.env.ENV;
 const isProdBuild = NextEnv === 'production';
 const isProd = myEnv === 'production';
 
-const devImageDomains = ['localhost', '127.0.0.1'];
-const prodImageDomains = [''];
+const imageDomains = [
+  'avatars.githubusercontent.com',
+  'lh3.googleusercontent.com',
+  'scontent-iad3-2.xx.fbcdn.net',
+  '*',
+];
+const devImageDomains = [...imageDomains, 'localhost', '127.0.0.1'];
+const prodImageDomains = [...imageDomains, ''];
 
 console.log(`> Building for ${myEnv}`);
 

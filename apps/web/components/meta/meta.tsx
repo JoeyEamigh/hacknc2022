@@ -1,4 +1,5 @@
 import environment from 'environment';
+import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { cleanBool } from 'shared';
@@ -7,13 +8,17 @@ export default function Meta({
   title,
   description = '',
   imgUrl = '',
+  noAuthorized,
 }: {
   title?: string;
   description?: string;
   imgUrl?: string;
+  noAuthorized?: boolean;
 }) {
   const router = useRouter();
+  const session = useSession();
 
+  if (noAuthorized && session?.status === 'authenticated') router.push('/');
   return (
     <Head>
       <title>{getTitle()}</title>
@@ -37,6 +42,6 @@ export default function Meta({
   );
 
   function getTitle() {
-    return title ? `${title} | Example` : `Example`;
+    return title ? `${title} | Rate My Class` : `Rate My Class`;
   }
 }

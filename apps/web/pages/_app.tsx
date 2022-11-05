@@ -2,12 +2,15 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import DefaultLayout from '../components/layouts/default-layout';
+import { SessionProvider } from 'next-auth/react';
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
-    <DynamicLayoutEngine>
-      <Component {...pageProps} />
-    </DynamicLayoutEngine>
+    <SessionProvider session={session}>
+      <DynamicLayoutEngine>
+        <Component {...pageProps} />
+      </DynamicLayoutEngine>
+    </SessionProvider>
   );
 }
 
