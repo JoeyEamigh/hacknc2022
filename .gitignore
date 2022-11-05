@@ -40,3 +40,12 @@ packages/**/.turbo
 
 # other
 !scripts/build
+
+# yarn
+yarn.lock
+
+# ben
+apps/scraper/data
+
+# secrets
+secrets
