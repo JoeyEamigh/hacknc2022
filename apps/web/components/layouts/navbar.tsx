@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { classes } from 'shared';
 import A from '../general/link';
 import Link from 'next/link';

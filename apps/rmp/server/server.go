@@ -86,9 +86,10 @@ func HandleSchoolAndProf(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Error querying rmp")
 	}
 
-	reparsed := ReparseResponse(respData)
+	// reparsed := ReparseResponse(respData)
 
-	return c.JSON(reparsed)
+	// return c.JSON(reparsed)
+	return c.JSON(respData)
 }
 
 func HandleProf(c *fiber.Ctx) error {

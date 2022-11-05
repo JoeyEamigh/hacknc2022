@@ -68,3 +68,27 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+// Don't touch above here
+
+model Teacher {
+  id                    String   @id @unique @default(uuid()) @db.Uuid
+  firstName             String
+  lastName              String
+  department            String
+  numRatings            Int
+  avgRating             Float
+  avgDifficulty         Float
+  wouldTakeAgainPercent Float
+  updatedAt             DateTime @updatedAt
+
+  school   School @relation(fields: [schoolId], references: [id])
+  schoolId String
+}
+
+model School {
+  // ID is per rate my professor, base64 of "School-XXXX" where XXXX is an integer
+  id      String    @id @unique
+  name    String
+  teacher Teacher[]
+}

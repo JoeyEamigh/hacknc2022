@@ -1,5 +1,7 @@
 package types
 
+import "time"
+
 type Query struct {
 	Text         string      `json:"text"`
 	SchoolID     string      `json:"schoolID"`
@@ -37,13 +39,25 @@ type School struct {
 	Name string `json:"name"`
 }
 
+func (School) TableName() string {
+	return "School"
+}
+
 type Teacher struct {
-	FirstName             string  `json:"firstName"`
-	LastName              string  `json:"lastName"`
-	Department            string  `json:"department"`
-	NumRatings            int     `json:"numRatings"`
-	AvgRating             float64 `json:"avgRating"`
-	AvgDifficulty         float64 `json:"avgDifficulty"`
-	WouldTakeAgainPercent float64 `json:"wouldTakeAgainPercent"`
-	School                School  `json:"school"`
+	ID                    string    `gorm:"primaryKey;column:id"`
+	FirstName             string    `json:"firstName" gorm:"column:firstName"`
+	LastName              string    `json:"lastName" gorm:"column:lastName"`
+	Department            string    `json:"department" gorm:"column:department"`
+	NumRatings            int       `json:"numRatings" gorm:"column:numRatings"`
+	AvgRating             float64   `json:"avgRating" gorm:"column:avgRating"`
+	AvgDifficulty         float64   `json:"avgDifficulty" gorm:"column:avgDifficulty"`
+	WouldTakeAgainPercent float64   `json:"wouldTakeAgainPercent" gorm:"column:wouldTakeAgainPercent"`
+	UpdatedAt             time.Time `gorm:"column:updatedAt"`
+
+	School   School `json:"school" gorm:"foreignKey:SchoolID"`
+	SchoolID string `gorm:"column:schoolId"`
+}
+
+func (Teacher) TableName() string {
+	return "Teacher"
 }
