@@ -1,0 +1,37 @@
+{
+    "class": {
+        "desc": "Fys: Special Topics",
+        "subject": "AAAD",
+        "catNo": 89,
+        "equivalences": [],
+        "term": "2023 Spring",
+        "hours": 3.0,
+        "sections": [{
+                "secNo": "001",
+                "classNo": 11568,
+                "schedule": "TTH 09:30 AM-10:45 AM",
+                "room": "Genome Sciences Bldg - Rm 1370",
+                "instruction_type": "In Person On Campus Learners",
+                "instructor": "SAHLE,EUNICE N"
+            },
+            {
+                "secNo": "002",
+                "classNo": 13982,
+                "schedule": "TTH 09:30 AM-10:45 AM",
+                "room": "None",
+                "instruction_type": "In Person On Campus Learners",
+                "instructor": "Berry,Maya Janeen"
+            },
+            {
+                "secNo": "003",
+                "classNo": 13983,
+                "schedule": "TTH 11:00 AM-12:15 PM",
+                "room": "Murphey - Rm 0302",
+                "instruction_type": "In Person On Campus Learners",
+                "instructor": "Brimmer,Brandi Clay"
+            }
+        ]
+
+    }
+
+}

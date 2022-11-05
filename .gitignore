@@ -40,3 +40,6 @@ packages/**/.turbo
 
 # other
 !scripts/build
+
+# bens shit
+apps/scraper/data
