@@ -1,0 +1,85 @@
+generator client {
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native", "linux-musl"]
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// THERE IS A BUG!! WHEN CREATING NEW TABLES, MAKE SURE TO ADD DEFAULT uuid_generate_v4() TO THE ID CREATION
+
+// Add the following to all schemas:
+//
+// generated
+// createdAt DateTime  @default(now())
+
+model Meta {
+  id        String   @id @unique @default(uuid()) @db.Uuid
+  key       String   @unique
+  value     String
+  // generated
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id        String    @id @unique @default(uuid()) @db.Uuid
+  fname     String
+  lname     String
+  email     String    @unique
+  verified  Boolean   @default(false)
+  password  String?
+  phone     String?
+  roles     Role[]    @default([USER])
+  flags     Flag[]
+  tokens    Token[]
+  sessions  Session[]
+  doNotMail Boolean   @default(false)
+  // generated
+  createdAt DateTime  @default(now())
+}
+
+/// This should always be hard deleted
+model Session {
+  id                  String   @id @unique @default(uuid()) @db.Uuid
+  fingerprint         String
+  accessVerification  String
+  refreshVerification String
+  User                User?    @relation(fields: [userId], references: [id])
+  userId              String?  @db.Uuid
+  // generated
+  lastSeen            DateTime @updatedAt
+  createdAt           DateTime @default(now())
+}
+
+/// This should always be hard deleted
+model Token {
+  id        String    @id @unique @default(uuid()) @db.Uuid
+  token     String
+  type      TokenType
+  User      User?     @relation(fields: [userId], references: [id])
+  userId    String?   @db.Uuid
+  expiresAt DateTime?
+  // generated
+  createdAt DateTime  @default(now())
+}
+
+// enums
+enum Flag {
+  RESET_PASSWORD
+  SUSPENDED
+  BANNED
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum TokenType {
+  VERIFICATION
+  PASSWORD_RESET
+  RECOMMENDATION
+}

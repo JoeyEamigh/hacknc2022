@@ -1,14 +1,53 @@
 {
-  "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**"
+      ]
+    },
+    "web#build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        ".next/**"
+      ],
+      "env": [
+        "ENV"
+      ]
+    },
+    "test": {
+      "dependsOn": [
+        "build"
+      ]
     },
     "lint": {
       "outputs": []
     },
+    "deploy": {
+      "dependsOn": [
+        "build"
+      ],
+      "outputs": [
+        "apps/**/build/**"
+      ]
+    },
     "dev": {
+      "dependsOn": [
+        "environment#build",
+        "prismas#build"
+      ],
+      "cache": false
+    },
+    "dev:local": {
+      "dependsOn": [
+        "environment#build",
+        "prismas#build"
+      ],
       "cache": false
     }
   }

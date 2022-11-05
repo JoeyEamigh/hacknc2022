@@ -1,27 +1,41 @@
 {
   "name": "web",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 8080",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "postbuild": "cp -r .next/static .next/standalone/apps/web/.next/static && cp -r public .next/standalone/apps/web/public",
+    "build:dev": "ENV=development next build",
+    "build:production": "ENV=production next build",
+    "start": "ENV=production next start",
+    "start:dev": "ENV=development next start",
+    "lint": "next lint --fix"
   },
   "dependencies": {
-    "next": "13.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "ui": "*"
+    "@headlessui/react": "^1.7.4",
+    "@heroicons/react": "^2.0.13",
+    "@types/node": "18.11.9",
+    "@types/react": "18.0.25",
+    "@types/react-dom": "18.0.8",
+    "eslint": "8.26.0",
+    "eslint-config-next": "13.0.2",
+    "next": "13.0.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "typescript": "4.8.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "eslint": "7.32.0",
-    "eslint-config-custom": "*",
-    "tsconfig": "*",
-    "@types/node": "^17.0.12",
-    "@types/react": "^18.0.22",
-    "@types/react-dom": "^18.0.7",
-    "typescript": "^4.5.3"
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.3",
+    "@tailwindcss/line-clamp": "^0.4.2",
+    "autoprefixer": "^10.4.13",
+    "next-transpile-modules": "^10.0.0",
+    "postcss": "^8.4.18",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-preset-env": "^7.8.2",
+    "tailwind-children": "^0.5.0",
+    "tailwind-scrollbar-hide": "^1.1.7",
+    "tailwindcss": "^3.2.2"
   }
 }

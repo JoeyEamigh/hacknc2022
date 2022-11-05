@@ -1,0 +1,15 @@
+{
+  "name": "environment",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "yarn tsc --build",
+    "dev": "yarn tsc --watch",
+    "dev:local": "yarn tsc --watch"
+  },
+  "devDependencies": {}
+}

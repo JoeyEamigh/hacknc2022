@@ -1,0 +1,30 @@
+{
+  "name": "prismas",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "prisma generate && yarn tsc --build",
+    "push": "prisma db push",
+    "pull": "prisma db pull",
+    "migrate": "prisma migrate dev",
+    "reset": "prisma migrate reset",
+    "reset:dev": "prisma migrate reset && db push",
+    "prisma": "prisma",
+    "studio": "prisma studio -n 0.0.0.0 -p 8081 --browser none",
+    "dev": "prisma studio -n 0.0.0.0 -p 8081 --browser none",
+    "seed": "yarn build && prisma db seed"
+  },
+  "devDependencies": {
+    "prisma": "^4.2.1"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.2.1"
+  },
+  "prisma": {
+    "seed": "node ./dist/prisma/seed.js"
+  }
+}
