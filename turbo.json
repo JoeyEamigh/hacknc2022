@@ -20,6 +20,12 @@
         "ENV"
       ]
     },
+    "importer#build": {
+      "dependsOn": [
+        "^build",
+        "scraper#build"
+      ]
+    },
     "test": {
       "dependsOn": [
         "build"

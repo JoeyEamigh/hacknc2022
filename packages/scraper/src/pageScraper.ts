@@ -240,7 +240,7 @@ export const scraperObject = {
       // Iterate through all terms
       for (let term of termPossibilities) {
         // Iterate through all subjects
-        for (let course of coursePossibilities.slice(0, 1)) {
+        for (let course of coursePossibilities) {
           console.log('Term, course: ' + term + ', ' + course);
 
           // Receive data

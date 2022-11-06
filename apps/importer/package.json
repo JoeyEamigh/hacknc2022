@@ -1,0 +1,23 @@
+{
+  "name": "importer",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "author": "Joey Eamigh",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "yarn tsc --build",
+    "go": "yarn tsc && node dist/index.js"
+  },
+  "dependencies": {
+    "prismas": "*",
+    "scraper": "*",
+    "types": "*",
+    "uuid": "^9.0.0",
+    "shared": "*"
+  },
+  "devDependencies": {
+    "@types/uuid": "^8.3.4"
+  }
+}

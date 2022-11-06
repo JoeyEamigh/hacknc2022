@@ -84,11 +84,82 @@ model Teacher {
 
   school   School @relation(fields: [schoolId], references: [id])
   schoolId String
+
+  @@index([schoolId, lastName], name: "teacher_last_name")
+  @@index([schoolId, firstName], name: "teacher_first_name")
+  @@index([schoolId, lastName, firstName], name: "teacher_last_first_name")
 }
 
 model School {
   // ID is per rate my professor, base64 of "School-XXXX" where XXXX is an integer
-  id      String    @id @unique
-  name    String
-  teacher Teacher[]
+  id       String    @id @unique
+  name     String
+  // don't fucking query plz
+  Teachers Teacher[]
+  Subjects Subject[]
+
+  @@index([name], name: "name")
+  @@index([id], name: "id")
+}
+
+// classes!
+model Subject {
+  id        String   @id @unique @default(uuid()) @db.Uuid
+  name      String?
+  slug      String
+  school    School   @relation(fields: [schoolId], references: [id])
+  // generated
+  createdAt DateTime @default(now())
+  schoolId  String
+  // don't query most likely?
+  classes   Class[]
+
+  @@unique([slug, schoolId])
+  @@index([slug])
+}
+
+model Class {
+  id            String    @id @unique @default(uuid()) @db.Uuid
+  subject       Subject   @relation(fields: [subjectId], references: [id])
+  name          String
+  number        String
+  term          Term
+  hours         String
+  equivalencies String[]
+  sections      Section[]
+  // generated
+  createdAt     DateTime  @default(now())
+  subjectId     String    @db.Uuid
+
+  @@unique([subjectId, number, term])
+  @@index([subjectId, number], name: "class_subject_number")
+}
+
+model Section {
+  id          String   @id @unique @default(uuid()) @db.Uuid
+  number      String
+  classNumber String
+  room        String
+  instruction String
+  instructor  String
+  class       Class    @relation(fields: [classId], references: [id])
+  // generated
+  createdAt   DateTime @default(now())
+  classId     String   @db.Uuid
+
+  @@unique([classNumber, number])
+}
+
+enum Term {
+  FALL2022
+  SPRING2023
+  SUMMER2023
+  FALL2023
+  SPRING2024
+  SUMMER2024
+  FALL2024
+  SPRING2025
+  SUMMER2025
+  FALL2025
+  SPRING2026
 }
