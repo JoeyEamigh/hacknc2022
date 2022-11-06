@@ -1,0 +1,20 @@
+{
+  "name": "scraper",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "yarn tsc --build",
+    "test": "node './src/index.js"
+  },
+  "devDependencies": {
+    "prismas": "*"
+  },
+  "dependencies": {
+    "class-validator": "^0.13.2",
+    "puppeteer": "^19.2.2"
+  }
+}
