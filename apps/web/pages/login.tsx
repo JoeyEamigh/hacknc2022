@@ -2,6 +2,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { signIn } from 'next-auth/react';
 import Meta from '../components/meta/meta';
+import Logo from '../assets/logo.png';
+import Image from 'next/image';
 
 const signInWith = [
   { provider: 'google', logo: <FontAwesomeIcon icon={faGoogle} />, name: 'Google' },
@@ -16,12 +18,7 @@ export default function Login() {
       <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8">
           <div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              className="relative mx-auto h-12 w-auto overflow-hidden"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-              alt="Rate your Classes"
-            />
+            <Image src={Logo} className="relative mx-auto h-12 w-auto overflow-hidden" alt="" />
             <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
               Sign in to your account
             </h2>

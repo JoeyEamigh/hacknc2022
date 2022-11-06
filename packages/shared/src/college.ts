@@ -26,3 +26,14 @@ export function stringToTermEnum(term: string): Term {
       return Term.SPRING2026;
   }
 }
+
+export function truncateCollegeName(name: string): string {
+  switch (name) {
+    case 'The University of North Carolina at Chapel Hill':
+      return 'UNC';
+    case 'North Carolina State University':
+      return 'NC State';
+    case 'Duke University':
+      return 'Duke';
+  }
+}

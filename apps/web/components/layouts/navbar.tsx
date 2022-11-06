@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid';
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { classes } from 'shared';
 import A from '../general/link';
 import Link from 'next/link';
@@ -9,8 +9,12 @@ import { SessionContextValue, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Logo from '../../assets/logo.png';
+import CollegeSelect from '../general/college-select';
 
-const links = [{ name: 'Home', href: '/' }];
+const links = [
+  { name: 'Home', href: '/' },
+  { name: 'Research', href: '/research' },
+];
 const profileLinks = [
   { name: 'Your Profile', href: '/profile' },
   // { name: 'Settings', href: '/settings' },
@@ -48,6 +52,7 @@ export default function Navbar() {
                 </div>
               </div>
               <div className="flex flex-1 items-center justify-center px-2 lg:ml-6 lg:justify-end">
+                <CollegeSelect />
                 <div className="w-full max-w-lg lg:max-w-xs">
                   <label htmlFor="search" className="sr-only">
                     Search for a Class!
@@ -100,6 +105,9 @@ export default function Navbar() {
             </div>
           </div>
           <Disclosure.Panel className="lg:hidden">
+            <div className="flex-col items-center justify-center pt-2 pb-1">
+              <CollegeSelect />
+            </div>
             <div className="space-y-1 pt-2 pb-3">
               {/* Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800" */}
               {links.map(l => (
