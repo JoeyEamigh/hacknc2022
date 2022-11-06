@@ -49,3 +49,9 @@ apps/scraper/data
 
 # secrets
 secrets
+
+# rust
+target/
+
+# vscode
+.vscode/
