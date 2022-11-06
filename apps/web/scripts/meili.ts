@@ -7,7 +7,7 @@ declare global {
 
 let client = (globalThis.meili || undefined) as searchClient;
 client = globalThis.meili || new searchClient({ host: environment.searchUrl });
-if (process.env.NODE_ENV !== 'production') globalThis.meili = client;
+globalThis.meili = client;
 client
   .index('classes')
   .updateSearchableAttributes([

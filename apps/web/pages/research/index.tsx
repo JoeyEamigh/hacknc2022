@@ -178,7 +178,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     take: 50,
   });
   subjects.forEach(c => (c.createdAt = JSON.stringify(c.createdAt) as unknown as Date));
-  const distinctSubjects = (await prisma.subject.findMany({ where: { schoolId: college.id }, distinct: ['slug'] })).map(
+  const distinctSubjects = (await client.subject.findMany({ where: { schoolId: college.id }, distinct: ['slug'] })).map(
     s => s.slug,
   );
 

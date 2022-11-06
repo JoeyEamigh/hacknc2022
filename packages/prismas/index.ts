@@ -15,7 +15,7 @@ if (typeof window === 'undefined') {
       console.log(`Query ${params.model}.${params.action} took ${after - before}ms`);
       return result;
     });
-  if (process.env.NODE_ENV !== 'production') globalThis.prisma = client;
+  globalThis.prisma = client;
 }
 
 export { client };

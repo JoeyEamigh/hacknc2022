@@ -128,7 +128,7 @@ export default function SingleClassView({
           <div className="w-full lg:col-span-4 lg:row-start-2">
             <h2 className="text-2xl font-bold tracking-tight text-gray-900">Recent Professors</h2>
             <div className="flex flex-col space-y-1.5">
-              {professors.map(p =>
+              {professors?.map(p =>
                 p?.avgRating ? (
                   <A
                     key={p?.id}
@@ -197,45 +197,45 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     },
   });
 
-  const professors = await Promise.all(
-    Array.from(
-      singleClass.sections
-        .map(s => s.instructor)
-        .reduce((acc, curr) => acc.add(curr), new Set<string>())
-        .values(),
-    )
-      .flatMap(i => i.split(';'))
-      .map(i => i.split(',').map(s => s.trim()))
-      .map(async names => {
-        let lastName = names[0];
-        let firstName = names[1]?.split(' ')?.[0];
+  // const professors = await Promise.all(
+  //   Array.from(
+  //     singleClass.sections
+  //       .map(s => s.instructor)
+  //       .reduce((acc, curr) => acc.add(curr), new Set<string>())
+  //       .values(),
+  //   )
+  //     .flatMap(i => i.split(';'))
+  //     .map(i => i.split(',').map(s => s.trim()))
+  //     .map(async names => {
+  //       let lastName = names[0];
+  //       let firstName = names[1]?.split(' ')?.[0];
 
-        let teacher = await client.teacher.findFirst({
-          where: { firstName, lastName, schoolId: singleClass.subject.schoolId },
-          include: { school: true },
-        });
+  //       let teacher = await client.teacher.findFirst({
+  //         where: { firstName, lastName, schoolId: singleClass.subject.schoolId },
+  //         include: { school: true },
+  //       });
 
-        if (!firstName || !lastName) return null;
+  //       if (!firstName || !lastName) return null;
 
-        if (teacher === null) {
-          // console.log(
-          //   `${environment.rmpUrl}/${Buffer.from(singleClass.subject.schoolId, 'base64')
-          //     .toString('utf-8')
-          //     .replace(/[^0-9]+/g, '')}/${encodeURIComponent(`${firstName} ${lastName}`).replace('-', '%2D')}`,
-          // );
-          return await (
-            await fetch(
-              `http://127.0.0.1:3000/${Buffer.from(singleClass.subject.schoolId, 'base64')
-                .toString('utf-8')
-                .slice(-4)}/${encodeURIComponent(`${firstName} ${lastName}`).replace('-', '%2D')}`,
-            )
-          ).json()[0];
-        } else {
-          return teacher;
-        }
-      })
-      .filter(p => p !== null),
-  );
+  //       if (teacher === null) {
+  //         // console.log(
+  //         //   `${environment.rmpUrl}/${Buffer.from(singleClass.subject.schoolId, 'base64')
+  //         //     .toString('utf-8')
+  //         //     .replace(/[^0-9]+/g, '')}/${encodeURIComponent(`${firstName} ${lastName}`).replace('-', '%2D')}`,
+  //         // );
+  //         // return await(
+  //         //   await fetch(
+  //         //     `${environment.rmpUrl}/${Buffer.from(singleClass.subject.schoolId, 'base64')
+  //         //       .toString('utf-8')
+  //         //       .slice(-4)}/${encodeURIComponent(`${firstName} ${lastName}`).replace('-', '%2D')}`,
+  //         //   ),
+  //         // ).json()[0];
+  //       } else {
+  //         return teacher;
+  //       }
+  //     })
+  //     .filter(p => p !== null),
+  // );
 
   singleClass.comments.forEach(c => {
     c.user.name = c.user.name
@@ -259,7 +259,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 
   return {
-    props: { singleClass: cloneDeep(singleClass), professors: cloneDeep(professors) },
+    props: { singleClass: cloneDeep(singleClass), professors: cloneDeep([]) },
   };
 }
 

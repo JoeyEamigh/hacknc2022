@@ -8,6 +8,6 @@ export const environment = {
   contentUrl: 'https://content.ratemyclasses.tech',
   rmpUrl: 'https://rmp.ratemyclasses.tech',
   lookupUrl: 'https://lookup.ratemyclasses.tech',
-  searchUrl: 'http://search.ratemyclasses.tech',
+  searchUrl: 'https://search.ratemyclasses.tech',
   version: versions.web.production,
 };
