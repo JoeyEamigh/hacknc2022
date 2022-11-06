@@ -11,13 +11,15 @@
     "go": "yarn tsc --build && node dist/index.js --shm-size=16gb"
   },
   "dependencies": {
+    "dotenv": "^16.0.3",
     "prismas": "*",
     "scraper": "*",
+    "shared": "*",
     "types": "*",
-    "uuid": "^9.0.0",
-    "shared": "*"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/dotenv": "^8.2.0",
     "@types/uuid": "^8.3.4"
   }
 }

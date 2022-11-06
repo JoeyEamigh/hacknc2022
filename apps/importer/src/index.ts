@@ -1,7 +1,10 @@
 import { scraper, getScraperLength } from 'scraper';
 import { Class, client, Prisma, Section, Subject } from 'prismas';
 import { ScrapedDataUNC } from './types';
-import { arrayOfNLength, stringToTermEnum } from 'shared';
+import { arrayOfNLength, capitalize, stringToTermEnum } from 'shared';
+import { config } from 'dotenv';
+
+config({ path: '../../packages/prismas/.env' });
 
 const instances = 1;
 const start = 0;
@@ -38,7 +41,11 @@ async function scrape(start: number, end: number) {
       let subject = presentSubjects.find(s => s.slug === course.subject);
       if (!subject)
         (subject = await client.subject.create({
-          data: { slug: course.subject, school: { connect: { id: school.id } } },
+          data: {
+            slug: course.subject,
+            name: capitalize((await (await fetch(`http://127.0.0.1:8000/unc/${course.subject}`)).json()).long),
+            school: { connect: { id: school.id } },
+          },
         })) && presentSubjects.push(subject);
       const sections: Partial<Section>[] = [];
       const classObj: Partial<Class> = {
@@ -58,6 +65,17 @@ async function scrape(start: number, end: number) {
           classNumber: section.classNo,
         });
       }
+
+      sections.forEach((section, i) => {
+        const otherSections = sections.filter((_, j) => i !== j);
+        const otherSection = otherSections.find(
+          otherSection => otherSection.number === section.number && otherSection.classNumber === section.classNumber,
+        );
+        if (otherSection) {
+          otherSection.instructor = `${otherSection.instructor}; ${section.instructor}`;
+          sections.splice(i, 1);
+        }
+      });
 
       if (!subject.id || !course.catNo || !classObj.term) continue;
       await client.class.upsert({
