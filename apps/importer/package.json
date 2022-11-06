@@ -8,7 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "yarn tsc --build",
-    "go": "yarn tsc && node dist/index.js"
+    "go": "yarn tsc --build && node dist/index.js --shm-size=16gb"
   },
   "dependencies": {
     "prismas": "*",

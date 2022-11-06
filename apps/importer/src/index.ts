@@ -4,13 +4,14 @@ import { ScrapedDataUNC } from './types';
 import { arrayOfNLength, stringToTermEnum } from 'shared';
 
 const instances = 1;
-const start = 10;
+const start = 0;
+const iterate = 1;
 
 (async () => {
   const possibilities = await getScraperLength();
 
-  for (let i = start || 0; i < possibilities; i += instances * 5) {
-    const runners = arrayOfNLength(instances).map((_, it) => scrape(i + it * 5, i + 5 + it * 5));
+  for (let i = start || 0; i < possibilities; i += instances * iterate) {
+    const runners = arrayOfNLength(instances).map((_, it) => scrape(i + it * iterate, i + iterate + it * iterate));
     await Promise.all(runners);
   }
 })();
