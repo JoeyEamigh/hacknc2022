@@ -1,11 +1,30 @@
-import { scraper } from 'scraper';
+import { scraper, getScraperLength } from 'scraper';
 import { Class, client, Prisma, Section, Subject } from 'prismas';
 import { ScrapedDataUNC } from './types';
-import { v4 as uuid } from 'uuid';
-import { stringToTermEnum } from 'shared';
+import { arrayOfNLength, stringToTermEnum } from 'shared';
+
+const instances = 1;
+const start = 10;
 
 (async () => {
-  const data: ScrapedDataUNC = JSON.parse(await scraper());
+  const possibilities = await getScraperLength();
+
+  for (let i = start || 0; i < possibilities; i += instances * 5) {
+    const runners = arrayOfNLength(instances).map((_, it) => scrape(i + it * 5, i + 5 + it * 5));
+    await Promise.all(runners);
+  }
+})();
+
+async function scrape(start: number, end: number) {
+  const data: ScrapedDataUNC = JSON.parse(
+    await new Promise(async resolve => {
+      try {
+        await scraper(start, end).then(value => resolve(value));
+      } catch (err) {
+        await scraper(start, end).then(value => resolve(value));
+      }
+    }),
+  );
   const school = await client.school.findFirst({
     where: { name: 'The University of North Carolina at Chapel Hill' },
   });
@@ -39,9 +58,6 @@ import { stringToTermEnum } from 'shared';
         });
       }
 
-      console.log(classObj);
-      console.log(sections);
-
       await client.class.upsert({
         where: {
           subjectId_number_term: { subjectId: subject.id, number: course.catNo, term: classObj.term },
@@ -69,4 +85,4 @@ import { stringToTermEnum } from 'shared';
       });
     }
   }
-})();
+}

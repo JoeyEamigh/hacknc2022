@@ -4,7 +4,24 @@ const URL = 'https://reports.unc.edu/class-search/';
 
 export const scraperObject = {
   url: URL, // URL
-  async scraper(browser) {
+  async getPossibilities(browser) {
+    //Make a new page in the browser
+    let page = await browser.newPage();
+
+    console.log(`Navigating to ${this.url}...`);
+
+    // Navigate to the selected URL
+    await page.goto(this.url);
+
+    // Wait for the required DOM to be rendered
+    await page.waitForSelector('main');
+
+    // Get all of the options for subject
+    let coursePossibilities = await page.$$eval('#subject-listbox li', links => links.map(el => el.textContent));
+
+    return coursePossibilities.length;
+  },
+  async scraper(browser, start: number, end: number) {
     // Output
     var outputJSON = {};
 
@@ -237,10 +254,10 @@ export const scraperObject = {
 
       let courses = []; // JSON Object for all classes
 
-      // Iterate through all terms
-      for (let term of termPossibilities) {
-        // Iterate through all subjects
-        for (let course of coursePossibilities) {
+      // Iterate through all subjects
+      for (let course of coursePossibilities.slice(start || 0, end || undefined)) {
+        // Iterate through all terms
+        for (let term of termPossibilities) {
           console.log('Term, course: ' + term + ', ' + course);
 
           // Receive data
