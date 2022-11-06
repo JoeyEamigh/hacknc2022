@@ -68,6 +68,10 @@ func CacheTeacher(teacher *types.Teacher) error {
 	return CreateTeacherOrUpdateIfOld(teacher, MAX_CACHE_AGE)
 }
 
+func CacheSchool(school *types.School) error {
+	return CreateSchoolIfNotExists(school)
+}
+
 func HandleSchoolAndProf(c *fiber.Ctx) error {
 	school, err := url.QueryUnescape(c.Params("school"))
 
@@ -93,6 +97,11 @@ func HandleSchoolAndProf(c *fiber.Ctx) error {
 	}
 
 	reparsed := ReparseResponse(respData)
+
+	if len(reparsed) > 0 {
+		CacheSchool(&reparsed[0].School)
+	}
+
 	for i := range reparsed {
 		CacheTeacher(&reparsed[i])
 	}
@@ -119,6 +128,7 @@ func HandleProf(c *fiber.Ctx) error {
 
 	reparsed := ReparseResponse(respData)
 	for i := range reparsed {
+		CacheSchool(&reparsed[i].School)
 		CacheTeacher(&reparsed[i])
 	}
 
