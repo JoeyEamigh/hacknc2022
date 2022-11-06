@@ -51,7 +51,7 @@ async function scrape(start: number, end: number) {
       for (const sectionI in course.sections) {
         const section = course.sections[sectionI];
         sections.push({
-          number: section.secNo,
+          number: sectionI,
           room: section.room || 'None',
           instruction: section.instruction_type || 'Unknown',
           instructor: section.instructor || 'Unknown',

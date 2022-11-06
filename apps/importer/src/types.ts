@@ -16,7 +16,6 @@ export interface UNCCourse {
 
 export interface UNCSection {
   classNo: string;
-  secNo: string;
   schedule: string;
   room: string;
   instruction_type: string;
