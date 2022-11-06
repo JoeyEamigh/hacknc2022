@@ -112,6 +112,7 @@ async function getLongName(slug: string) {
   try {
     return capitalize((await (await fetch(`${environment.lookupUrl}/unc/${slug}`)).json()).long);
   } catch (err) {
+    console.log(err);
     return undefined;
   }
 }

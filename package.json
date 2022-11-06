@@ -24,7 +24,7 @@
     "db:reset": "yarn workspace prismas run prisma migrate reset",
     "db:migrate": "yarn workspace prismas migrate",
     "db:push": "yarn workspace prismas run push",
-    "cloc": "npx -y cloc --exclude-dir=node_modules,dist,.next apps packages"
+    "cloc": "npx -y cloc --exclude-dir=node_modules,dist,.next,target apps packages"
   },
   "devDependencies": {
     "prettier": "latest",

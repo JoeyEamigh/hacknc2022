@@ -7,6 +7,6 @@ export const environment = {
   apiUrl: 'http://localhost:8080/api',
   contentUrl: 'http://localhost:4566/ratemyclasses',
   rmpUrl: 'http://localhost:3000',
-  lookupUrl: 'http://localhost:8000',
+  lookupUrl: 'http://127.0.0.1:8000',
   version: versions.web.development,
 };
