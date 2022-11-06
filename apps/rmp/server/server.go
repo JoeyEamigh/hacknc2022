@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"time"
 
 	"github.com/JoeyEamigh/hacknc2022/types"
 	"github.com/gofiber/fiber/v2"
@@ -13,6 +14,7 @@ import (
 )
 
 const RMP_GQL_CLIENT = "https://www.ratemyprofessors.com/graphql"
+const MAX_CACHE_AGE = 24 * time.Hour
 
 var QUERY string
 var CLIENT *graphql.Client
@@ -62,6 +64,14 @@ func ReparseResponse(resp types.SearchResponse) []types.Teacher {
 	return teachers
 }
 
+func CacheTeacher(teacher *types.Teacher) error {
+	return CreateTeacherOrUpdateIfOld(teacher, MAX_CACHE_AGE)
+}
+
+func CacheSchool(school *types.School) error {
+	return CreateSchoolIfNotExists(school)
+}
+
 func HandleSchoolAndProf(c *fiber.Ctx) error {
 	school, err := url.QueryUnescape(c.Params("school"))
 
@@ -86,10 +96,17 @@ func HandleSchoolAndProf(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Error querying rmp")
 	}
 
-	// reparsed := ReparseResponse(respData)
+	reparsed := ReparseResponse(respData)
 
-	// return c.JSON(reparsed)
-	return c.JSON(respData)
+	if len(reparsed) > 0 {
+		CacheSchool(&reparsed[0].School)
+	}
+
+	for i := range reparsed {
+		CacheTeacher(&reparsed[i])
+	}
+
+	return c.JSON(reparsed)
 }
 
 func HandleProf(c *fiber.Ctx) error {
@@ -103,11 +120,17 @@ func HandleProf(c *fiber.Ctx) error {
 	var respData types.SearchResponse
 	ctx := context.Background()
 
-	if err := CLIENT.Run(ctx, req, &respData); err != nil {
+	// expected behavior for rmp is to return an error if no school is specified
+	// this is not really an error, it's just how the site works
+	if err := CLIENT.Run(ctx, req, &respData); err != nil && err.Error() != "graphql: invalid base64" {
 		return c.Status(500).SendString("Error querying rmp")
 	}
 
 	reparsed := ReparseResponse(respData)
+	for i := range reparsed {
+		CacheSchool(&reparsed[i].School)
+		CacheTeacher(&reparsed[i])
+	}
 
 	return c.JSON(reparsed)
 }

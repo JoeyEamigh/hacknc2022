@@ -44,7 +44,7 @@ func (School) TableName() string {
 }
 
 type Teacher struct {
-	ID                    string    `gorm:"primaryKey;column:id"`
+	ID                    string    `json:"id" gorm:"primaryKey;column:id"`
 	FirstName             string    `json:"firstName" gorm:"column:firstName"`
 	LastName              string    `json:"lastName" gorm:"column:lastName"`
 	Department            string    `json:"department" gorm:"column:department"`
