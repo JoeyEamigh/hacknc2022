@@ -98,9 +98,9 @@ func HandleSchoolAndProf(c *fiber.Ctx) error {
 
 	reparsed := ReparseResponse(respData)
 
-	if len(reparsed) > 0 {
-		CacheSchool(&reparsed[0].School)
-	}
+	// if len(reparsed) > 0 {
+	// 	CacheSchool(&reparsed[0].School)
+	// }
 
 	for i := range reparsed {
 		CacheTeacher(&reparsed[i])
@@ -128,7 +128,7 @@ func HandleProf(c *fiber.Ctx) error {
 
 	reparsed := ReparseResponse(respData)
 	for i := range reparsed {
-		CacheSchool(&reparsed[i].School)
+		// CacheSchool(&reparsed[i].School)
 		CacheTeacher(&reparsed[i])
 	}
 
@@ -140,7 +140,9 @@ func CreateServer() *fiber.App {
 
 	app.Get("/:school/:prof", HandleSchoolAndProf)
 
-	app.Get("/:prof", HandleProf)
+	app.Get("/:prof", func(c *fiber.Ctx) error {
+		return c.JSON([]int{})
+	})
 
 	return app
 }

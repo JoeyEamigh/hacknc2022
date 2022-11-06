@@ -2,36 +2,35 @@ import { Fragment, useEffect, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { classes, truncateCollegeName } from 'shared';
-import { getSelectedCollege } from '../../scripts/storage';
+import { getSelectedCollege, saveSelectedCollege } from '../../scripts/storage';
+import { useRouter } from 'next/router';
 
 export default function CollegeSelect() {
-  const [selected, setSelected] = useState({
-    name: 'The University of North Carolina at Chapel Hill',
-    id: 'U2Nob29sLTEyMzI=',
-  });
+  const [selected, setSelected] = useState<{ name: string; id: string }>(null);
   const [colleges, setColleges] = useState<{ id: string; name: string }[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     fetch('/api/colleges')
       .then(res => res.json())
-      .then(data => setColleges(data))
-      .then(() =>
-        setSelected(
-          colleges.find(async college => college.id === (await getSelectedCollege())) || {
-            name: 'The University of North Carolina at Chapel Hill',
-            id: 'U2Nob29sLTEyMzI=',
-          },
-        ),
-      );
+      .then(data => setColleges(data));
   }, []);
 
-  if (!colleges.length) return null;
+  useEffect(() => {
+    (async () => {
+      const selected = await getSelectedCollege();
+      setSelected(colleges.find(college => college.id === selected));
+    })();
+  }, [colleges]);
+
+  if (!colleges.length || !selected) return null;
 
   async function selectCollege(college: { id: string; name: string }) {
     await fetch('/api/colleges', { method: 'POST', body: JSON.stringify({ id: college.id }) });
-    setSelected(college);
+    console.log(college.id);
+    await saveSelectedCollege(college.id);
+    router.reload();
   }
-
   return (
     <Listbox value={selected} onChange={selectCollege}>
       {({ open }) => (

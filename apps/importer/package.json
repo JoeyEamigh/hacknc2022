@@ -8,16 +8,19 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "yarn tsc --build",
-    "go": "yarn tsc --build && node dist/index.js --shm-size=16gb"
+    "duke": "yarn tsc --build && node dist/duke.js",
+    "go": "yarn tsc --build && node dist/index.js --shm-size=16gb",
+    "meili": "yarn tsc --build && node dist/meili.js"
   },
   "dependencies": {
     "dotenv": "^16.0.3",
+    "environment": "*",
+    "meilisearch": "^0.29.1",
     "prismas": "*",
     "scraper": "*",
     "shared": "*",
     "types": "*",
-    "uuid": "^9.0.0",
-    "environment": "*"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",

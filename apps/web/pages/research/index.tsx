@@ -33,12 +33,12 @@ export default function Explore({
             <h2 id="subjects-heading" className="sr-only">
               Subjects
             </h2>
-            <div className="grid grid-cols-1 grid-rows-2 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               {subjects.map(s => (
                 <A key={s.id} href={`/research/${s.slug}`}>
                   <div className="h-full overflow-hidden rounded-md border border-gray-100 p-4 shadow-md hover:shadow-lg">
                     <h3 className="text-2xl font-medium">{s.slug}</h3>
-                    <p>{s.name}</p>
+                    <h4 className="text-xl">{s.name}</h4>
                   </div>
                 </A>
               ))}
@@ -113,10 +113,11 @@ export function Sidebar({ subjects, term }: { subjects: string[]; term: Term }) 
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex min-h-0 flex-1 flex-col border-r border-gray-200 bg-white">
-            <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
+          <div className="flex flex-1 flex-col border-r border-gray-200 bg-white">
+            <div className="flex flex-1 flex-col space-y-4 overflow-y-auto pt-16 pb-4">
               <div className="flex flex-shrink-0 items-center px-4">
-                <Image src={Logo} className="h-12 w-auto" alt="" /> <p className="pl-4">Search Options:</p>
+                {/* <Image src={Logo} className="h-12 w-auto" alt="" /> */}
+                <h2 className="mt-8 text-center text-3xl">Search Options</h2>
               </div>
               <SearchAndFilter oTerm={term} subjects={subjects} />
             </div>

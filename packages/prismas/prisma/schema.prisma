@@ -59,6 +59,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  comments      Comment[]
 }
 
 model VerificationToken {
@@ -119,33 +120,55 @@ model Subject {
 }
 
 model Class {
-  id            String    @id @unique @default(uuid()) @db.Uuid
-  subject       Subject   @relation(fields: [subjectId], references: [id])
-  name          String
-  number        String
-  term          Term
-  hours         String
-  equivalencies String[]
-  sections      Section[]
+  id                  String             @id @unique @default(uuid()) @db.Uuid
+  subject             Subject            @relation(fields: [subjectId], references: [id])
+  name                String
+  number              String
+  term                Term
+  hours               String
+  equivalencies       String[]
+  sections            Section[]
+  aggregations        ClassAggregations? @relation(fields: [classAggregationsId], references: [id])
   // generated
-  createdAt     DateTime  @default(now())
-  subjectId     String    @db.Uuid
+  createdAt           DateTime           @default(now())
+  subjectId           String             @db.Uuid
+  comments            Comment[]
+  classAggregationsId String?            @unique @db.Uuid
 
   @@unique([subjectId, number, term])
   @@index([subjectId, number], name: "class_subject_number")
 }
 
+model ClassAggregations {
+  id             String   @id @unique @default(uuid()) @db.Uuid
+  numRatings     Int
+  rating         Int
+  difficulty     Int
+  wouldRecommend Int
+  totalFive      Int
+  totalFour      Int
+  totalThree     Int
+  totalTwo       Int
+  totalOne       Int
+  // generated
+  createdAt      DateTime @default(now())
+  classId        String?  @unique @db.Uuid
+  class          Class?
+}
+
 model Section {
-  id          String   @id @unique @default(uuid()) @db.Uuid
+  id          String    @id @unique @default(uuid()) @db.Uuid
   number      String
   classNumber String
   room        String
   instruction String
   instructor  String
-  class       Class    @relation(fields: [classId], references: [id])
+  class       Class     @relation(fields: [classId], references: [id])
   // generated
-  createdAt   DateTime @default(now())
-  classId     String   @db.Uuid
+  createdAt   DateTime  @default(now())
+  classId     String    @db.Uuid
+  // do not query
+  Comments    Comment[]
 
   @@unique([classNumber, number])
 }
@@ -162,4 +185,25 @@ enum Term {
   SUMMER2025
   FALL2025
   SPRING2026
+}
+
+model Comment {
+  id         String   @id @unique @default(uuid()) @db.Uuid
+  text       String
+  rating     Int
+  difficulty Int
+  recommend  Boolean
+  class      Class    @relation(fields: [classId], references: [id])
+  section    Section? @relation(fields: [sectionId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+  // generated
+  createdAt  DateTime @default(now())
+  sectionId  String?  @db.Uuid
+  classId    String   @db.Uuid
+  userId     String
+
+  @@index([classId])
+  @@index([sectionId])
+  @@index([classId, sectionId])
+  @@index([userId])
 }

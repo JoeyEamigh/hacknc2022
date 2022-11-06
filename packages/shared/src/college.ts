@@ -58,11 +58,11 @@ export function getCurrentTerm() {
   const date = new Date();
   const year = date.getFullYear();
   const month = date.getMonth();
-  if (month < 5) {
+  if (month <= 5) {
     return Term[`SPRING${year}`];
-  } else if (month < 8) {
+  } else if (month <= 7) {
     return Term[`SUMMER${year}`];
-  } else if (month < 12) {
+  } else if (month <= 12) {
     return Term[`FALL${year}`];
   }
 }

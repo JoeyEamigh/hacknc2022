@@ -3,7 +3,11 @@ import Cookies from 'cookies';
 import { client, Term } from 'prismas';
 import A from '../../components/general/link';
 import { Sidebar } from '.';
-import { getCurrentTerm } from 'shared';
+import { getCurrentTerm, classes as joinCSS, cloneDeep } from 'shared';
+import { PlusIcon, XMarkIcon } from '@heroicons/react/20/solid';
+import cookie from 'js-cookie';
+import { useEffect, useState } from 'react';
+import Meta from '../../components/meta/meta';
 
 export default function ResearchSubject({
   college,
@@ -12,8 +16,24 @@ export default function ResearchSubject({
   subjects,
   term,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const [myClasses, setMyClasses] = useState(JSON.parse(cookie.get('classes') || '[]'));
+  const colors = [
+    'bg-red-300',
+    'bg-red-300',
+    'bg-red-300',
+    'bg-yellow-300',
+    'bg-lime-300',
+    'bg-green-300',
+    'bg-gray-300',
+  ];
+
+  useEffect(() => {
+    setMyClasses(JSON.parse(cookie.get('classes') || '[]'));
+  }, []);
+
   return (
     <>
+      <Meta title={subject.slug} />
       <Sidebar subjects={subjects} term={term} />
       <main className="pb-24 lg:pl-64">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-16">
@@ -29,18 +49,56 @@ export default function ResearchSubject({
             <h2 id="classes-heading" className="sr-only">
               Classes
             </h2>
-            <div className="grid auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid auto-rows-fr grid-cols-1 gap-6 lg:grid-cols-2">
               {classes.map(c => (
                 <A key={c.id} href={`/class/${c.id}`}>
-                  <div className="flex h-full flex-row overflow-hidden rounded-md border border-gray-100 p-4 shadow-md hover:shadow-lg">
-                    <div className="mr-4 flex aspect-[1] h-full items-center justify-center rounded-md bg-green-300 p-2 text-center text-3xl font-bold">
-                      5.0
+                  <div className="relative flex h-full flex-row overflow-hidden rounded-md border border-gray-100 p-4 shadow-md hover:shadow-lg">
+                    <button
+                      onClick={e => handleAddClass(e, c)}
+                      className={joinCSS(
+                        'absolute top-4 right-4 cursor-pointer font-semibold text-gray-400',
+                        myClasses.includes(c.id) ? 'hover:text-red-500' : 'hover:text-green-500',
+                      )}
+                      title="Add to Compare">
+                      {myClasses.includes(c.id) ? <XMarkIcon className="h-6 w-6" /> : <PlusIcon className="h-6 w-6" />}
+                    </button>
+                    <div
+                      className={joinCSS(
+                        colors[
+                          Math.round(
+                            c.aggregations?.numRatings ? c.aggregations?.rating / c.aggregations?.numRatings : 6,
+                          )
+                        ],
+                        'mr-4 flex aspect-[1] h-full items-center justify-center rounded-md p-2 text-center text-3xl font-bold',
+                      )}>
+                      {c.aggregations?.numRatings
+                        ? (c.aggregations?.rating / c.aggregations?.numRatings || 0).toFixed(1)
+                        : 'N/A'}
                     </div>
                     <div className="grow">
-                      <h3 className="text-2xl font-medium">
+                      <h3 className="text-2xl font-semibold">
                         {subject.slug} {c.number}
                       </h3>
-                      <p>{c.name}</p>
+                      <h4 className="text-xl">{c.name}</h4>
+                      <p>
+                        Difficulty:{' '}
+                        <span className="font-semibold">
+                          {c.aggregations?.numRatings
+                            ? (c.aggregations?.difficulty / c.aggregations?.numRatings || 0).toFixed(1)
+                            : 'N/A'}
+                        </span>
+                      </p>
+                      <p>
+                        {c.aggregations?.numRatings ? (
+                          <>
+                            <span className="font-semibold">
+                              {Math.round((c.aggregations?.wouldRecommend / c.aggregations?.numRatings || 0) * 100) +
+                                '%'}
+                            </span>{' '}
+                            would recommend
+                          </>
+                        ) : null}
+                      </p>
                     </div>
                   </div>
                 </A>
@@ -51,6 +109,16 @@ export default function ResearchSubject({
       </main>
     </>
   );
+
+  function handleAddClass(e, c) {
+    e.preventDefault();
+    e.stopPropagation();
+    let nMyClasses = cloneDeep(myClasses);
+    if (nMyClasses.includes(c.id)) nMyClasses = nMyClasses.filter(id => id !== c.id);
+    else nMyClasses.push(c.id);
+    setMyClasses(nMyClasses);
+    cookie.set('classes', JSON.stringify(nMyClasses));
+  }
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -62,17 +130,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const subject = await client.subject.findUnique({
     where: { slug_schoolId: { schoolId: college.id, slug: String(context.params.subject) } },
+    include: { classes: true },
   });
-  subject.createdAt = String(subject.createdAt) as unknown as Date;
   const classes = await client.class.findMany({
     where: { subject: { schoolId: college.id, slug: String(context.params.subject) }, term },
-    include: { sections: true, _count: true },
+    include: { sections: true, _count: true, aggregations: true },
     orderBy: { number: 'asc' },
-  });
-
-  classes.forEach(c => {
-    c.createdAt = JSON.stringify(c.createdAt) as unknown as Date;
-    c.sections.forEach(s => (s.createdAt = JSON.stringify(s.createdAt) as unknown as Date));
   });
 
   const subjects = (await prisma.subject.findMany({ where: { schoolId: college.id }, distinct: ['slug'] })).map(
@@ -80,7 +143,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   );
 
   return {
-    props: { college, classes, subject, subjects, term },
+    props: {
+      college: cloneDeep(college),
+      classes: cloneDeep(classes),
+      subject: cloneDeep(subject),
+      subjects: cloneDeep(subjects),
+      term: cloneDeep(term),
+    },
   };
 }
 
