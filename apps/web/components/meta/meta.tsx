@@ -9,16 +9,20 @@ export default function Meta({
   description = '',
   imgUrl = '',
   noAuthorized,
+  authorized,
 }: {
   title?: string;
   description?: string;
   imgUrl?: string;
   noAuthorized?: boolean;
+  authorized?: boolean;
 }) {
   const router = useRouter();
   const session = useSession();
 
   if (noAuthorized && session?.status === 'authenticated') router.push('/');
+  if (authorized && session?.status === 'unauthenticated') router.push('/login');
+
   return (
     <Head>
       <title>{getTitle()}</title>

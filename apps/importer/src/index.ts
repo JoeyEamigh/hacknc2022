@@ -51,14 +51,15 @@ async function scrape(start: number, end: number) {
       for (const sectionI in course.sections) {
         const section = course.sections[sectionI];
         sections.push({
-          number: section.classNo,
-          room: section.room,
-          instruction: section.instruction_type,
-          instructor: section.instructor,
+          number: section.secNo,
+          room: section.room || 'None',
+          instruction: section.instruction_type || 'Unknown',
+          instructor: section.instructor || 'Unknown',
           classNumber: section.classNo,
         });
       }
 
+      if (subject.id || !course.catNo || classObj.term) continue;
       await client.class.upsert({
         where: {
           subjectId_number_term: { subjectId: subject.id, number: course.catNo, term: classObj.term },

@@ -8,11 +8,12 @@ import Link from 'next/link';
 import { SessionContextValue, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import Logo from '../../assets/logo.png';
 
 const links = [{ name: 'Home', href: '/' }];
 const profileLinks = [
   { name: 'Your Profile', href: '/profile' },
-  { name: 'Settings', href: '/settings' },
+  // { name: 'Settings', href: '/settings' },
 ];
 
 export default function Navbar() {
@@ -28,16 +29,7 @@ export default function Navbar() {
               <div className="flex px-2 lg:px-0">
                 <div className="flex flex-shrink-0 items-center">
                   <A href="/">
-                    <img
-                      className="block h-8 w-auto lg:hidden"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                      alt="Your Company"
-                    />
-                    <img
-                      className="hidden h-8 w-auto lg:block"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                      alt="Your Company"
-                    />
+                    <Image src={Logo} className="block h-12 w-auto" alt="" />
                   </A>
                 </div>
                 <div className="hidden lg:ml-6 lg:flex lg:space-x-8">
@@ -58,7 +50,7 @@ export default function Navbar() {
               <div className="flex flex-1 items-center justify-center px-2 lg:ml-6 lg:justify-end">
                 <div className="w-full max-w-lg lg:max-w-xs">
                   <label htmlFor="search" className="sr-only">
-                    Search
+                    Search for a Class!
                   </label>
                   <div className="relative">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -68,7 +60,7 @@ export default function Navbar() {
                       id="search"
                       name="search"
                       className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-10 pr-3 leading-5 placeholder-gray-500 focus:border-indigo-500 focus:placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
-                      placeholder="Search"
+                      placeholder="Search for a Class!"
                       type="search"
                     />
                   </div>
