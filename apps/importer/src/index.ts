@@ -110,7 +110,7 @@ async function scrape(start: number, end: number) {
 
 async function getLongName(slug: string) {
   try {
-    capitalize((await (await fetch(`${environment.lookupUrl}/unc/${slug}`)).json()).long);
+    return capitalize((await (await fetch(`${environment.lookupUrl}/unc/${slug}`)).json()).long);
   } catch (err) {
     return undefined;
   }
