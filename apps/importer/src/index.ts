@@ -5,7 +5,7 @@ import { arrayOfNLength, stringToTermEnum } from 'shared';
 
 const instances = 1;
 const start = 0;
-const iterate = 1;
+const iterate = 5;
 
 (async () => {
   const possibilities = await getScraperLength();
