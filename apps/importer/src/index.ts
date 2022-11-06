@@ -59,7 +59,7 @@ async function scrape(start: number, end: number) {
         });
       }
 
-      if (subject.id || !course.catNo || classObj.term) continue;
+      if (!subject.id || !course.catNo || !classObj.term) continue;
       await client.class.upsert({
         where: {
           subjectId_number_term: { subjectId: subject.id, number: course.catNo, term: classObj.term },
