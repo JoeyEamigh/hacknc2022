@@ -3,6 +3,7 @@ import { Class, client, Prisma, Section, Subject } from 'prismas';
 import { ScrapedDataUNC } from './types';
 import { arrayOfNLength, capitalize, stringToTermEnum } from 'shared';
 import { config } from 'dotenv';
+import environment from 'environment';
 
 config({ path: '../../packages/prismas/.env' });
 
@@ -43,7 +44,7 @@ async function scrape(start: number, end: number) {
         (subject = await client.subject.create({
           data: {
             slug: course.subject,
-            name: capitalize((await (await fetch(`http://127.0.0.1:8000/unc/${course.subject}`)).json()).long),
+            name: await getLongName(course.subject),
             school: { connect: { id: school.id } },
           },
         })) && presentSubjects.push(subject);
@@ -104,5 +105,13 @@ async function scrape(start: number, end: number) {
         },
       });
     }
+  }
+}
+
+async function getLongName(slug: string) {
+  try {
+    capitalize((await (await fetch(`${environment.lookupUrl}/unc/${slug}`)).json()).long);
+  } catch (err) {
+    return undefined;
   }
 }

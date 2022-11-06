@@ -6,5 +6,7 @@ export const environment = {
   frontendUrl: 'https://ratemyclasses.tech',
   apiUrl: 'https://api.ratemyclasses.tech',
   contentUrl: 'https://content.ratemyclasses.tech',
+  rmpUrl: 'https://rmp.ratemyclasses.tech',
+  lookupUrl: 'https://lookup.ratemyclasses.tech',
   version: versions.web.production,
 };

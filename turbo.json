@@ -20,8 +20,9 @@
         "ENV"
       ]
     },
-    "importer#build": {
+    "importer#go": {
       "dependsOn": [
+        "environment#build",
         "^build",
         "scraper#build"
       ]

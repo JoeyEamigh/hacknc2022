@@ -1,17 +1,14 @@
 {
   "web": {
     "production": "v1.0.0",
-    "staging": "v1.0.0",
     "development": "v1.0.0"
   },
   "api": {
     "production": "v1.0.0",
-    "staging": "v1.0.0",
     "development": "v1.0.0"
   },
   "prisma": {
     "production": "v1.0.0",
-    "staging": "v1.0.0",
     "development": "v1.0.0"
   }
 }
