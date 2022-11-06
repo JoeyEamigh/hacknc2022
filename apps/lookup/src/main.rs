@@ -1,12 +1,13 @@
 #[macro_use]
 extern crate rocket;
-use lookup::{handle_short_dept, scrape_unc};
+use lookup::{handle_duke, handle_unc, scrape_duke, scrape_unc};
 
 #[launch]
 async fn rocket() -> _ {
     let unc_lookup = scrape_unc().await.unwrap();
-    println!("UNC Lookup: {:?}", unc_lookup);
+    let duke_lookup = scrape_duke().await.unwrap();
     rocket::build()
-        .manage(unc_lookup)
-        .mount("/", routes![handle_short_dept])
+        .manage(lookup::UNCLookup(unc_lookup))
+        .manage(lookup::DukeLookup(duke_lookup))
+        .mount("/", routes![handle_unc, handle_duke])
 }
