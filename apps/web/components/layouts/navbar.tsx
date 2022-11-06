@@ -25,7 +25,7 @@ export default function Navbar() {
   const path = useRouter().pathname;
 
   return (
-    <Disclosure as="nav" className="bg-white shadow">
+    <Disclosure as="nav" className={classes('bg-white shadow', path.includes('/research') && 'lg:pl-64')}>
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
@@ -43,7 +43,8 @@ export default function Navbar() {
                       key={l.name + ' desktop'}
                       href={l.href}
                       className={classes(
-                        path === l.href && 'border-indigo-500 text-gray-900',
+                        ((path.includes(l.href) && l.href !== '/') || (l.href === '/' && path === '/')) &&
+                          'border-indigo-500 text-gray-900',
                         'inline-flex items-center border-b-2  px-1 pt-1 text-sm font-medium',
                       )}>
                       {l.name}
