@@ -1,5 +1,9 @@
 FROM debian:bookworm-slim
 
+RUN apt update && apt install libssl-dev -y
 RUN mkdir /app
 WORKDIR /app
-COPY target/x86_64-unknown-linux-gnu/release /app
+COPY lookup /app
+RUN chmod +x /app/lookup
+
+ENTRYPOINT ["/app/lookup"]
