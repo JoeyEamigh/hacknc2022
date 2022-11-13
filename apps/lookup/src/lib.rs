@@ -102,6 +102,27 @@ pub async fn scrape_unc() -> Result<HashMap<String, String>, ScrapeErrors> {
         .collect::<_>())
 }
 
+pub async fn scrape_unc2() -> Result<HashMap<String, String>, ScrapeErrors> {
+    let body = reqwest::get(UNC_URL).await?.text().await?;
+
+    let dom = tl::parse(&body, tl::ParserOptions::default())?;
+    let parser = dom.parser();
+
+    let re = Regex::new(r"(?P<long>.+) \((?P<short>[A-Z]{4})")?;
+    Ok(dom
+        .query_selector("#atozindex > ul > li > a")
+        .ok_or("could not get a[href]")?
+        .filter_map(|handle| {
+            let inner_text = &handle.get(parser)?.inner_text(parser);
+            let caps = re.captures(inner_text)?;
+            Some((
+                String::from(caps.name("short")?.as_str()),
+                String::from(caps.name("long")?.as_str()),
+            ))
+        })
+        .collect::<_>())
+}
+
 #[derive(Deserialize)]
 struct DukeResponse {
     subjects: Vec<DukeSubject>,
