@@ -56,6 +56,12 @@
         "prismas#build"
       ],
       "cache": false
+    },
+    "clean": {
+      "dependsOn": [
+
+      ],
+      "cache": false
     }
   }
 }

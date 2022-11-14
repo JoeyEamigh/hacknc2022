@@ -1,6 +1,6 @@
 import { MeiliSearch } from 'meilisearch';
 import { client } from 'prismas';
-const searchClient = new MeiliSearch({ host: 'https://search.ratemyclasses.tech' });
+const searchClient = new MeiliSearch({ host: 'http://127.0.0.1:7700' });
 
 (async () => {
   const classesCount = await client.class.count();

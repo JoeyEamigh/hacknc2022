@@ -15,7 +15,7 @@
     "lint": "FORCE_COLOR=1 turbo run lint",
     "test": "FORCE_COLOR=1 turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "clean": "rimraf apps/**/dist apps/**/.next packages/**/dist",
+    "clean": "rimraf apps/**/dist apps/**/.next packages/**/dist && turbo run clean",
     "deepclean": "rimraf apps/**/.turbo packages/**/.turbo node_modules apps/**/node_modules packages/**/node_modules apps/**/dist apps/**/.next packages/**/dist",
     "deploy": "FORCE_COLOR=1 turbo run deploy",
     "deploy:staging": "FORCE_COLOR=1 ENV=staging turbo run deploy",
@@ -30,7 +30,7 @@
     "prettier": "latest",
     "prettier-plugin-tailwindcss": "^0.1.7",
     "rimraf": "^3.0.2",
-    "turbo": "latest"
+    "turbo": "^1.6.3"
   },
   "engines": {
     "node": ">=16.0.0"
