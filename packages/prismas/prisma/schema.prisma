@@ -73,7 +73,8 @@ model VerificationToken {
 // Don't touch above here
 
 model Teacher {
-  id                    String   @id @unique @default(uuid()) @db.Uuid
+  id String @id @unique @default(uuid()) @db.Uuid
+
   firstName             String
   lastName              String
   department            String
@@ -81,11 +82,15 @@ model Teacher {
   avgRating             Float
   avgDifficulty         Float
   wouldTakeAgainPercent Float
-  updatedAt             DateTime @updatedAt
 
-  school   School    @relation(fields: [schoolId], references: [id])
-  schoolId String
-  Section  Section[]
+  school School @relation(fields: [schoolId], references: [id])
+
+  // generated
+  schoolId String    @db.Uuid
+  Sections Section[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([schoolId, lastName], name: "teacher_last_name")
   @@index([schoolId, firstName], name: "teacher_first_name")
@@ -93,54 +98,63 @@ model Teacher {
 }
 
 model School {
-  id       String    @id @unique @default(uuid()) @db.Uuid
-  // ID is per rate my professor, base64 of "School-XXXX" where XXXX is an integer
-  rmpId    String    @unique
-  name     String
-  // don't fucking query plz
+  id    String @id @unique @default(uuid()) @db.Uuid
+  // rmpId is per rate my professor, base64 of "School-XXXX" where XXXX is an integer
+  rmpId String @unique
+  name  String
+
+  // don't query
   Teachers Teacher[]
   Subjects Subject[]
-  Class    Class[]
+  Classes  Class[]
 
-  @@index([name], name: "name")
-  @@index([id], name: "id")
+  // generated
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@index([rmpId], name: "rmpId")
 }
 
-// classes!
 model Subject {
-  id        String   @id @unique @default(uuid()) @db.Uuid
-  name      String?
-  slug      String
-  school    School   @relation(fields: [schoolId], references: [id])
+  id String @id @unique @default(uuid()) @db.Uuid
+
+  name String? // full name of the subject: "Computer Science" e.g.
+  slug String // short name of the subject: "COMP" e.g.
+
+  school  School  @relation(fields: [schoolId], references: [id])
+  classes Class[] // don't query most likely?
+
   // generated
+  schoolId String @db.Uuid
+
   createdAt DateTime @default(now())
-  schoolId  String   @db.Uuid
-  // don't query most likely?
-  classes   Class[]
+  updatedAt DateTime @updatedAt
 
   @@unique([slug, schoolId])
   @@index([slug])
 }
 
 model Class {
-  id            String    @id @unique @default(uuid()) @db.Uuid
-  subject       Subject   @relation(fields: [subjectId], references: [id])
-  name          String
-  number        String
-  hours         String // TODO: change to float/decimal or whatever the db wants
-  equivalencies String[]
-  sections      Section[]
+  id String @id @unique @default(uuid()) @db.Uuid
 
+  name          String // full name of the class
+  number        String // number for class: "101" e.g.
+  hours         Decimal // credit hours. stored as decimal to avoid floating point errors
+  equivalencies String[] // array of equivalencies for the class in `${slug} ${number}` format
+
+  sections     Section[]
+  comments     Comment[]
   aggregations ClassAggregations @relation(fields: [classAggregationsId], references: [id])
   school       School            @relation(fields: [schoolId], references: [id])
+  subject      Subject           @relation(fields: [subjectId], references: [id])
 
   // generated
-  createdAt           DateTime  @default(now())
-  subjectId           String    @db.Uuid
-  comments            Comment[]
-  classAggregationsId String    @unique @db.Uuid
-  schoolId            String    @db.Uuid
+  classAggregationsId String @unique @db.Uuid
+  schoolId            String @db.Uuid
+  subjectId           String @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([schoolId, subjectId, number])
   @@index([schoolId, subjectId, number], name: "class_subject_number")
@@ -149,42 +163,49 @@ model Class {
 model ClassAggregations {
   id String @id @unique @default(uuid()) @db.Uuid
 
-  numRatings     Int
-  cumRating      Int
-  difficulty     Int
-  wouldRecommend Int
+  numRatings     Int // count of ratings
+  cumRating      Int // sum of ratings
+  difficulty     Int // sum of difficulty ratings
+  wouldRecommend Int // count of recommended ratings
 
+  // counts for each of the star numbers
   totalFive  Int
   totalFour  Int
   totalThree Int
   totalTwo   Int
   totalOne   Int
+
   // generated
-  createdAt  DateTime @default(now())
-  classId    String?  @unique @db.Uuid
-  class      Class?
+  class   Class?
+  classId String? @unique @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Section {
-  id          String  @id @unique @default(uuid()) @db.Uuid
-  number      String
-  classNumber String
-  room        String
-  instruction String
-  instructor  Teacher @relation(fields: [teacherId], references: [id])
+  id String @id @unique @default(uuid()) @db.Uuid
 
+  number      String // section number, usually 001 or so. sometimes has a letter?
+  room        String // room number
+  instruction String // mode of instruction
+
+  // used to identify the which term the section is in, e.g. "Fall 2022"
   term Term
   year Int
 
-  class     Class     @relation(fields: [classId], references: [id])
-  // generated
-  createdAt DateTime  @default(now())
-  classId   String    @db.Uuid
-  teacherId String    @db.Uuid
-  // do not query
-  Comments  Comment[]
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+  class   Class   @relation(fields: [classId], references: [id])
 
-  @@unique([classNumber, number])
+  // generated
+  classId   String @db.Uuid
+  teacherId String @db.Uuid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // do not query
+  Comments Comment[]
 }
 
 enum Term {
@@ -196,19 +217,25 @@ enum Term {
 }
 
 model Comment {
-  id         String   @id @unique @default(uuid()) @db.Uuid
-  text       String
-  rating     Int
-  difficulty Int
-  recommend  Boolean
-  class      Class    @relation(fields: [classId], references: [id])
-  section    Section? @relation(fields: [sectionId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
+  id String @id @unique @default(uuid()) @db.Uuid
+
+  text String // actual content of each comment
+
+  rating     Int // rating of the class from 1-5 inclusive
+  difficulty Int // difficulty of the class from 1-5 inclusive
+  recommend  Boolean // whether the user would recommend the class
+
+  class   Class    @relation(fields: [classId], references: [id])
+  section Section? @relation(fields: [sectionId], references: [id])
+  user    User     @relation(fields: [userId], references: [id])
+
   // generated
-  createdAt  DateTime @default(now())
-  sectionId  String?  @db.Uuid
-  classId    String   @db.Uuid
-  userId     String
+  sectionId String? @db.Uuid
+  classId   String  @db.Uuid
+  userId    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([classId])
   @@index([sectionId])

@@ -3,8 +3,8 @@ const prisma = new PrismaClient();
 
 async function main() {
   await prisma.school.upsert({
-    where: { id: 'U2Nob29sLTEyMzI=' },
-    create: { id: 'U2Nob29sLTEyMzI=', name: 'The University of North Carolina at Chapel Hill' },
+    where: { rmpId: 'U2Nob29sLTEyMzI=' },
+    create: { rmpId: 'U2Nob29sLTEyMzI=', name: 'The University of North Carolina at Chapel Hill' },
     update: { name: 'The University of North Carolina at Chapel Hill' },
   });
 }

@@ -1,4 +1,4 @@
-module github.com/JoeyEamigh/hacknc2022
+module github.com/JoeyEamigh/hacknc2022/rmp
 
 go 1.19
 

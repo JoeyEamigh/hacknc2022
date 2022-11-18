@@ -1,6 +1,6 @@
 package types
 
-import "time"
+import "github.com/JoeyEamigh/hacknc2022/go-schema"
 
 type Query struct {
 	Text         string      `json:"text"`
@@ -10,13 +10,13 @@ type Query struct {
 }
 
 type SearchResponse struct {
-	School School `json:"school"`
+	School schema.School `json:"school"`
 	Search struct {
 		Teachers struct {
 			DidFallback bool `json:"didFallback"`
 			Edges       []struct {
-				Cursor string  `json:"cursor"`
-				Node   Teacher `json:"node"`
+				Cursor string         `json:"cursor"`
+				Node   schema.Teacher `json:"node"`
 			} `json:"edges"`
 			Filters []struct {
 				Field   string `json:"field"`
@@ -32,32 +32,4 @@ type SearchResponse struct {
 			ResultCount int `json:"resultCount"`
 		} `json:"teachers"`
 	} `json:"search"`
-}
-
-type School struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
-
-func (School) TableName() string {
-	return "School"
-}
-
-type Teacher struct {
-	ID                    string    `json:"id" gorm:"primaryKey;column:id"`
-	FirstName             string    `json:"firstName" gorm:"column:firstName"`
-	LastName              string    `json:"lastName" gorm:"column:lastName"`
-	Department            string    `json:"department" gorm:"column:department"`
-	NumRatings            int       `json:"numRatings" gorm:"column:numRatings"`
-	AvgRating             float64   `json:"avgRating" gorm:"column:avgRating"`
-	AvgDifficulty         float64   `json:"avgDifficulty" gorm:"column:avgDifficulty"`
-	WouldTakeAgainPercent float64   `json:"wouldTakeAgainPercent" gorm:"column:wouldTakeAgainPercent"`
-	UpdatedAt             time.Time `gorm:"column:updatedAt"`
-
-	School   School `json:"school" gorm:"foreignKey:SchoolID"`
-	SchoolID string `gorm:"column:schoolId"`
-}
-
-func (Teacher) TableName() string {
-	return "Teacher"
 }

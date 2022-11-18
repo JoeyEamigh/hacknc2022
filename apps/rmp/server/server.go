@@ -8,7 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/JoeyEamigh/hacknc2022/types"
+	"github.com/JoeyEamigh/hacknc2022/go-schema"
+	"github.com/JoeyEamigh/hacknc2022/rmp/types"
 	"github.com/gofiber/fiber/v2"
 	"github.com/machinebox/graphql"
 )
@@ -54,8 +55,8 @@ func CreateRequest(school string, prof string) *graphql.Request {
 	return req
 }
 
-func ReparseResponse(resp types.SearchResponse) []types.Teacher {
-	var teachers []types.Teacher
+func ReparseResponse(resp types.SearchResponse) []schema.Teacher {
+	var teachers []schema.Teacher
 
 	for _, edge := range resp.Search.Teachers.Edges {
 		teachers = append(teachers, edge.Node)
@@ -64,11 +65,11 @@ func ReparseResponse(resp types.SearchResponse) []types.Teacher {
 	return teachers
 }
 
-func CacheTeacher(teacher *types.Teacher) error {
+func CacheTeacher(teacher *schema.Teacher) error {
 	return CreateTeacherOrUpdateIfOld(teacher, MAX_CACHE_AGE)
 }
 
-func CacheSchool(school *types.School) error {
+func CacheSchool(school *schema.School) error {
 	return CreateSchoolIfNotExists(school)
 }
 

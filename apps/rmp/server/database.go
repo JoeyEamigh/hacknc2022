@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/JoeyEamigh/hacknc2022/types"
+	"github.com/JoeyEamigh/hacknc2022/go-schema"
 	"github.com/google/uuid"
 
 	"gorm.io/driver/postgres"
@@ -21,24 +21,24 @@ func ConnectToDatabase() error {
 	return err
 }
 
-func GetTeacher(firstName, lastName, department string) (*types.Teacher, error) {
-	cond := &types.Teacher{
+func GetTeacher(firstName, lastName, department string) (*schema.Teacher, error) {
+	cond := &schema.Teacher{
 		FirstName:  firstName,
 		LastName:   lastName,
 		Department: department,
 	}
 
-	var teacher types.Teacher
+	var teacher schema.Teacher
 	err := DATABASE.Where(cond).First(&teacher).Error
 
 	return &teacher, err
 }
 
-func UpdateTeacher(teacher *types.Teacher) error {
+func UpdateTeacher(teacher *schema.Teacher) error {
 	return DATABASE.Save(teacher).Error
 }
 
-func UpdateTeacherIfOld(teacher *types.Teacher, maxAge time.Duration) error {
+func UpdateTeacherIfOld(teacher *schema.Teacher, maxAge time.Duration) error {
 	oldTeacher, err := GetTeacher(teacher.FirstName, teacher.LastName, teacher.Department)
 
 	if err != nil {
@@ -54,21 +54,21 @@ func UpdateTeacherIfOld(teacher *types.Teacher, maxAge time.Duration) error {
 	return nil
 }
 
-func CreateTeacher(teacher *types.Teacher) error {
+func CreateTeacher(teacher *schema.Teacher) error {
 	teacher.ID = uuid.New().String()
 	teacher.SchoolID = teacher.School.ID
 
 	return DATABASE.Create(teacher).Error
 }
 
-func CreateTeacherOrUpdateIfOld(teacher *types.Teacher, maxAge time.Duration) error {
-	cond := &types.Teacher{
+func CreateTeacherOrUpdateIfOld(teacher *schema.Teacher, maxAge time.Duration) error {
+	cond := &schema.Teacher{
 		FirstName:  teacher.FirstName,
 		LastName:   teacher.LastName,
 		Department: teacher.Department,
 	}
 
-	var oldTeacher types.Teacher
+	var oldTeacher schema.Teacher
 	err := DATABASE.Where(cond).Limit(1).Find(&oldTeacher).Error
 
 	if err != nil {
@@ -89,11 +89,11 @@ func CreateTeacherOrUpdateIfOld(teacher *types.Teacher, maxAge time.Duration) er
 	return nil
 }
 
-func CreateSchool(school *types.School) error {
+func CreateSchool(school *schema.School) error {
 	return DATABASE.Create(school).Error
 }
 
-func CreateSchoolIfNotExists(school *types.School) error {
-	var _school types.School // dummy variable to check if school exists
+func CreateSchoolIfNotExists(school *schema.School) error {
+	var _school schema.School // dummy variable to check if school exists
 	return DATABASE.FirstOrCreate(&_school, school).Error
 }
