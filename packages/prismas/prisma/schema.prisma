@@ -83,8 +83,9 @@ model Teacher {
   wouldTakeAgainPercent Float
   updatedAt             DateTime @updatedAt
 
-  school   School @relation(fields: [schoolId], references: [id])
+  school   School    @relation(fields: [schoolId], references: [id])
   schoolId String
+  Section  Section[]
 
   @@index([schoolId, lastName], name: "teacher_last_name")
   @@index([schoolId, firstName], name: "teacher_first_name")
@@ -92,15 +93,18 @@ model Teacher {
 }
 
 model School {
+  id       String    @id @unique @default(uuid()) @db.Uuid
   // ID is per rate my professor, base64 of "School-XXXX" where XXXX is an integer
-  id       String    @id @unique
+  rmpId    String    @unique
   name     String
   // don't fucking query plz
   Teachers Teacher[]
   Subjects Subject[]
+  Class    Class[]
 
   @@index([name], name: "name")
   @@index([id], name: "id")
+  @@index([rmpId], name: "rmpId")
 }
 
 // classes!
@@ -111,7 +115,7 @@ model Subject {
   school    School   @relation(fields: [schoolId], references: [id])
   // generated
   createdAt DateTime @default(now())
-  schoolId  String
+  schoolId  String   @db.Uuid
   // don't query most likely?
   classes   Class[]
 
@@ -120,71 +124,75 @@ model Subject {
 }
 
 model Class {
-  id                  String             @id @unique @default(uuid()) @db.Uuid
-  subject             Subject            @relation(fields: [subjectId], references: [id])
-  name                String
-  number              String
-  term                Term
-  hours               String
-  equivalencies       String[]
-  sections            Section[]
-  aggregations        ClassAggregations? @relation(fields: [classAggregationsId], references: [id])
-  // generated
-  createdAt           DateTime           @default(now())
-  subjectId           String             @db.Uuid
-  comments            Comment[]
-  classAggregationsId String?            @unique @db.Uuid
+  id            String    @id @unique @default(uuid()) @db.Uuid
+  subject       Subject   @relation(fields: [subjectId], references: [id])
+  name          String
+  number        String
+  hours         String // TODO: change to float/decimal or whatever the db wants
+  equivalencies String[]
+  sections      Section[]
 
-  @@unique([subjectId, number, term])
-  @@index([subjectId, number], name: "class_subject_number")
+  aggregations ClassAggregations @relation(fields: [classAggregationsId], references: [id])
+  school       School            @relation(fields: [schoolId], references: [id])
+
+  // generated
+  createdAt           DateTime  @default(now())
+  subjectId           String    @db.Uuid
+  comments            Comment[]
+  classAggregationsId String    @unique @db.Uuid
+  schoolId            String    @db.Uuid
+
+  @@unique([schoolId, subjectId, number])
+  @@index([schoolId, subjectId, number], name: "class_subject_number")
 }
 
 model ClassAggregations {
-  id             String   @id @unique @default(uuid()) @db.Uuid
+  id String @id @unique @default(uuid()) @db.Uuid
+
   numRatings     Int
-  rating         Int
+  cumRating      Int
   difficulty     Int
   wouldRecommend Int
-  totalFive      Int
-  totalFour      Int
-  totalThree     Int
-  totalTwo       Int
-  totalOne       Int
+
+  totalFive  Int
+  totalFour  Int
+  totalThree Int
+  totalTwo   Int
+  totalOne   Int
   // generated
-  createdAt      DateTime @default(now())
-  classId        String?  @unique @db.Uuid
-  class          Class?
+  createdAt  DateTime @default(now())
+  classId    String?  @unique @db.Uuid
+  class      Class?
 }
 
 model Section {
-  id          String    @id @unique @default(uuid()) @db.Uuid
+  id          String  @id @unique @default(uuid()) @db.Uuid
   number      String
   classNumber String
   room        String
   instruction String
-  instructor  String
-  class       Class     @relation(fields: [classId], references: [id])
+  instructor  Teacher @relation(fields: [teacherId], references: [id])
+
+  term Term
+  year Int
+
+  class     Class     @relation(fields: [classId], references: [id])
   // generated
-  createdAt   DateTime  @default(now())
-  classId     String    @db.Uuid
+  createdAt DateTime  @default(now())
+  classId   String    @db.Uuid
+  teacherId String    @db.Uuid
   // do not query
-  Comments    Comment[]
+  Comments  Comment[]
 
   @@unique([classNumber, number])
 }
 
 enum Term {
-  FALL2022
-  SPRING2023
-  SUMMER2023
-  FALL2023
-  SPRING2024
-  SUMMER2024
-  FALL2024
-  SPRING2025
-  SUMMER2025
-  FALL2025
-  SPRING2026
+  SPRING
+  SUMMER
+  FALL
+  WINTER
+  JANUARY
 }
 
 model Comment {

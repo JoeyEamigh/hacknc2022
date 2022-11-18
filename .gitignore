@@ -55,10 +55,14 @@ secrets
 target/
 
 # vscode
-.vscode/
+# .vscode/
 
 # search
 search
 
 # go
 apps/rmp/rmp
+
+# python
+venv/
+.mypy_cache/

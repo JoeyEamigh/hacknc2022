@@ -1,0 +1,11 @@
+{
+    "name": "scrapy",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "build": "",
+        "dev": "python3 scrapy.py",
+        "clean": ""
+    },
+    "dependencies": {}
+}

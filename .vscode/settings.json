@@ -1,0 +1,9 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "./apps/tl/Cargo.toml",
+        "./apps/lookup/Cargo.toml",
+    ],
+    "python.venvPath": "./apps/scrapy/venv",
+    "python.analysis.typeCheckingMode": "off",
+    "python.analysis.inlayHints.functionReturnTypes": true,
+}
