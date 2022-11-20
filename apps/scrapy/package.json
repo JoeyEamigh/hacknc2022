@@ -1,11 +1,24 @@
 {
-    "name": "scrapy",
-    "version": "0.0.0",
-    "private": true,
-    "scripts": {
-        "build": "",
-        "dev": "python3 scrapy.py",
-        "clean": ""
-    },
-    "dependencies": {}
+  "name": "scrapy",
+  "version": "0.0.0",
+  "main": "index.ts",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "yarn tsc --build",
+    "dev": "yarn tsc --watch",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "node-html-parser": "^6.1.4",
+    "uuid": "^9.0.0",
+    "environment": "*",
+    "prismas": "*",
+    "shared": "*",
+    "types": "*"
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.2"
+  }
 }

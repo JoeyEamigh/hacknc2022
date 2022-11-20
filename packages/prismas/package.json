@@ -19,10 +19,10 @@
     "seed": "yarn build && prisma db seed"
   },
   "devDependencies": {
-    "prisma": "^4.2.1"
+    "prisma": "^4.6.1"
   },
   "dependencies": {
-    "@prisma/client": "^4.2.1"
+    "@prisma/client": "^4.6.1"
   },
   "prisma": {
     "seed": "node ./dist/prisma/seed.js"

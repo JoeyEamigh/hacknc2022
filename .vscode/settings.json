@@ -6,4 +6,7 @@
     "python.venvPath": "./apps/scrapy/venv",
     "python.analysis.typeCheckingMode": "off",
     "python.analysis.inlayHints.functionReturnTypes": true,
+    "[typescript]": {
+        "editor.tabSize": 2
+    }
 }

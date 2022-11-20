@@ -112,7 +112,9 @@ model School {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([rmpId], name: "rmpId")
+  @@index([id])
+  @@index([rmpId])
+  @@index([name])
 }
 
 model Subject {
@@ -130,7 +132,8 @@ model Subject {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([slug, schoolId])
+  @@unique([schoolId, slug])
+  @@index([schoolId, slug])
   @@index([slug])
 }
 
@@ -157,7 +160,7 @@ model Class {
   updatedAt DateTime @updatedAt
 
   @@unique([schoolId, subjectId, number])
-  @@index([schoolId, subjectId, number], name: "class_subject_number")
+  @@index([schoolId, subjectId, number])
 }
 
 model ClassAggregations {
@@ -194,18 +197,20 @@ model Section {
   term Term
   year Int
 
-  teacher Teacher @relation(fields: [teacherId], references: [id])
-  class   Class   @relation(fields: [classId], references: [id])
+  teacher Teacher? @relation(fields: [teacherId], references: [id])
+  class   Class    @relation(fields: [classId], references: [id])
 
   // generated
-  classId   String @db.Uuid
-  teacherId String @db.Uuid
+  classId   String  @db.Uuid
+  teacherId String? @db.Uuid
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // do not query
   Comments Comment[]
+
+  @@unique([classId, number, term, year])
 }
 
 enum Term {
