@@ -7,6 +7,7 @@
   "scripts": {
     "build": "yarn tsc --build",
     "dev": "yarn tsc --watch",
+    "go": "yarn build && node dist/index.js",
     "clean": "rimraf dist"
   },
   "dependencies": {
@@ -16,7 +17,8 @@
     "environment": "*",
     "prismas": "*",
     "shared": "*",
-    "types": "*"
+    "types": "*",
+    "rmp": "*"
   },
   "devDependencies": {
     "rimraf": "^3.0.2"

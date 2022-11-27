@@ -1,0 +1,23 @@
+{
+  "extends": "config/base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "strict": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017",
+    "incremental": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitAny": true
+  },
+  "include": ["src", "index.ts"],
+  "exclude": ["node_modules", "dist"],
+  "compileOnSave": true
+}

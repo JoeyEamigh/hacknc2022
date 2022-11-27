@@ -16,7 +16,8 @@
     "prisma": "prisma",
     "studio": "prisma studio -n 0.0.0.0 -p 8081 --browser none",
     "dev": "prisma studio -n 0.0.0.0 -p 8081 --browser none",
-    "seed": "yarn build && prisma db seed"
+    "seed": "yarn build && prisma db seed",
+    "clean": "rimraf dist"
   },
   "devDependencies": {
     "prisma": "^4.6.1"

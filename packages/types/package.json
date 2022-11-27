@@ -11,10 +11,8 @@
     "dev": "yarn tsc --watch",
     "dev:local": "yarn tsc --watch"
   },
-  "devDependencies": {
-    "prismas": "*"
-  },
   "dependencies": {
+    "prismas": "*",
     "class-validator": "^0.13.2"
   }
 }

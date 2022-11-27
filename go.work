@@ -1,7 +1,5 @@
 go 1.19
 
 use (
-	./apps/rmp
-	./apps/scrapy
 	./packages/go-schema
 )
