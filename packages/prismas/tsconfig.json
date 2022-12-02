@@ -1,7 +1,7 @@
 {
   "extends": "config/base.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "./dist"
   },
   "include": ["prisma", "index.ts"],
   "exclude": ["node_modules", "dist"]

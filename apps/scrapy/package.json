@@ -8,12 +8,14 @@
     "build": "yarn tsc --build",
     "dev": "yarn tsc --watch",
     "go": "yarn build && node dist/index.js",
+    "meili": "yarn tsc --build && node dist/meili.js",
     "clean": "rimraf dist"
   },
   "dependencies": {
     "dotenv": "^16.0.3",
     "node-html-parser": "^6.1.4",
     "uuid": "^9.0.0",
+    "meilisearch": "^0.29.1",
     "environment": "*",
     "prismas": "*",
     "shared": "*",

@@ -154,14 +154,13 @@ model Class {
 
   sections     Section[]
   comments     Comment[]
-  aggregations ClassAggregations @relation(fields: [classAggregationsId], references: [id])
-  school       School            @relation(fields: [schoolId], references: [id])
-  subject      Subject           @relation(fields: [subjectId], references: [id])
+  school       School             @relation(fields: [schoolId], references: [id])
+  subject      Subject            @relation(fields: [subjectId], references: [id])
+  aggregations ClassAggregations?
 
   // generated
-  classAggregationsId String @unique @db.Uuid
-  schoolId            String @db.Uuid
-  subjectId           String @db.Uuid
+  schoolId  String @db.Uuid
+  subjectId String @db.Uuid
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -186,8 +185,8 @@ model ClassAggregations {
   totalOne   Int
 
   // generated
-  class   Class?
-  classId String? @unique @db.Uuid
+  class   Class  @relation(fields: [classId], references: [id])
+  classId String @unique @db.Uuid
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

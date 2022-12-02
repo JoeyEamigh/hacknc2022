@@ -330,7 +330,7 @@ function parseTeacherName(name: string) {
   return { firstName: firstName.trim().toLowerCase(), lastName: lastName.trim().toLowerCase() } as TeacherName;
 }
 
-function createNewAggregation(): Prisma.ClassAggregationsCreateInput {
+function createNewAggregation(): Prisma.ClassAggregationsCreateWithoutClassInput {
   return {
     numRatings: 0,
     cumRating: 0,

@@ -20,7 +20,10 @@ client
     'sections.number',
     'sections.room',
   ]);
-client.index('classes').updateSettings({ filterableAttributes: ['subject.schoolId', 'subject.slug'] });
+client.index('classes').updateSettings({
+  filterableAttributes: ['subject.schoolId', 'subject.slug', 'subject.school.rmpId'],
+  sortableAttributes: ['number'],
+});
 client.index('classes').updateDistinctAttribute('name');
 
 export { client as searchClient };

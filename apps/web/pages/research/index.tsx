@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import Cookies from 'cookies';
-import { client, Term } from 'prismas';
+import { client, Term, Subject } from 'prismas';
 import A from '../../components/general/link';
 import { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
@@ -174,10 +174,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const subjectCount = await client.subject.count({ where: { schoolId: college.id, name: { not: null } } });
   const subjects = await client.subject.findMany({
     where: { schoolId: college.id, name: { not: null } },
-    skip: Math.floor(Math.random() * (subjectCount - 50)),
+    skip: Math.max(0, Math.floor(Math.random() * (subjectCount - 50))),
     take: 50,
   });
-  subjects.forEach(c => (c.createdAt = JSON.stringify(c.createdAt) as unknown as Date));
+  subjects.forEach(c => {
+    c.createdAt = JSON.stringify(c.createdAt) as unknown as Date;
+    c.updatedAt = JSON.stringify(c.updatedAt) as unknown as Date;
+  });
   const distinctSubjects = (await client.subject.findMany({ where: { schoolId: college.id }, distinct: ['slug'] })).map(
     s => s.slug,
   );
@@ -189,5 +192,5 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 const defaultCollege = {
   name: 'The University of North Carolina at Chapel Hill',
-  id: 'U2Nob29sLTEyMzI=',
+  rmpId: 'U2Nob29sLTEyMzI=',
 };

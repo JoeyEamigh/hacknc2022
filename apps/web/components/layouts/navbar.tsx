@@ -182,7 +182,7 @@ export function CommandPalette({ open, setOpen }: { open?: boolean; setOpen?: (o
     setQuery(e.target.value);
     const results = await searchClient
       .index('classes')
-      .search(e.target.value, { filter: `subject.schoolId='${(await getSelectedCollege()) || 'U2Nob29sLTEyMzI='}'` });
+      .search(e.target.value, { sort: ['number:asc'], filter: `subject.school.rmpId='${(await getSelectedCollege()) || 'U2Nob29sLTEyMzI='}'` });
     setHits(results.hits);
   }
 

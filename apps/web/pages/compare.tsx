@@ -177,21 +177,21 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     classIds.map(id => client.class.findUnique({ where: { id }, include: { aggregations: true, subject: true } })),
   );
 
-  classes.forEach(c => {
-    if (!c?.aggregations?.numRatings) {
-      c.aggregations = {
-        numRatings: 0,
-        rating: 0,
-        difficulty: 0,
-        wouldRecommend: 0,
-        totalFive: 0,
-        totalFour: 0,
-        totalThree: 0,
-        totalTwo: 0,
-        totalOne: 0,
-      } as ClassAggregations;
-    }
-  });
+  // classes.forEach(c => {
+  //   if (!c?.aggregations?.numRatings) {
+  //     c.aggregations = {
+  //       numRatings: 0,
+  //       rating: 0,
+  //       difficulty: 0,
+  //       wouldRecommend: 0,
+  //       totalFive: 0,
+  //       totalFour: 0,
+  //       totalThree: 0,
+  //       totalTwo: 0,
+  //       totalOne: 0,
+  //     } as ClassAggregations;
+  //   }
+  // });
 
   return {
     props: {

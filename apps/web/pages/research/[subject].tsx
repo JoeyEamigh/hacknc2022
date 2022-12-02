@@ -66,13 +66,13 @@ export default function ResearchSubject({
                       className={joinCSS(
                         colors[
                           Math.round(
-                            c.aggregations?.numRatings ? c.aggregations?.rating / c.aggregations?.numRatings : 6,
+                            c.aggregations?.numRatings ? c.aggregations?.cumRating / c.aggregations?.numRatings : 6,
                           )
                         ],
                         'mr-4 flex aspect-[1] h-full items-center justify-center rounded-md p-2 text-center text-3xl font-bold',
                       )}>
                       {c.aggregations?.numRatings
-                        ? (c.aggregations?.rating / c.aggregations?.numRatings || 0).toFixed(1)
+                        ? (c.aggregations?.cumRating / c.aggregations?.numRatings || 0).toFixed(1)
                         : 'N/A'}
                     </div>
                     <div className="grow">
@@ -125,15 +125,19 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req, res } = context;
   const cookies = new Cookies(req, res);
   let college = JSON.parse(Buffer.from(cookies?.get('college') || '', 'base64')?.toString('utf-8') || '{}');
-  if (!college?.id) college = defaultCollege;
+  if (!college?.id) {
+    college = defaultCollege;
+    college.id = (await client.school.findUnique({where: {rmpId: college.rmpId}, select: {id: true}})).id;
+  }
+
   const term: Term = cookies?.get('term') || getCurrentTerm();
 
   const subject = await client.subject.findUnique({
-    where: { slug_schoolId: { schoolId: college.id, slug: String(context.params.subject) } },
+    where: { schoolId_slug: { schoolId: college.id, slug: String(context.params.subject) } },
     include: { classes: true },
   });
   const classes = await client.class.findMany({
-    where: { subject: { schoolId: college.id, slug: String(context.params.subject) }, term },
+    where: { subject: { schoolId: college.id, slug: String(context.params.subject) } },
     include: { sections: true, _count: true, aggregations: true },
     orderBy: { number: 'asc' },
   });
@@ -155,5 +159,5 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 const defaultCollege = {
   name: 'The University of North Carolina at Chapel Hill',
-  id: 'U2Nob29sLTEyMzI=',
+  rmpId: 'U2Nob29sLTEyMzI=',
 };

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { ClassAggregations, client } from 'prismas';
 import { useEffect, useState } from 'react';
-import { classes, cloneDeep, enumToTermString } from 'shared';
+import { classes, cloneDeep, capitalize } from 'shared';
 import A from '../../components/general/link';
 import Meta from '../../components/meta/meta';
 import environment from 'environment';
@@ -23,7 +23,7 @@ export default function SingleClassView({
         <h1 className="text-center text-3xl font-semibold">
           {singleClass.subject.slug} {singleClass.number}: {singleClass.name}
         </h1>
-        <p className="text-center">{enumToTermString(singleClass.term)}</p>
+        {/* <p className="text-center">{singleClass.term}</p> */}
       </section>
       <section className="mx-auto flex max-w-5xl bg-white">
         <div className="mx-auto max-w-2xl px-4 pt-16 sm:px-6 sm:pt-24 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-y-8 lg:gap-x-6 lg:px-8 lg:pt-8">
@@ -37,7 +37,7 @@ export default function SingleClassView({
                     <StarIcon
                       key={rating}
                       className={classes(
-                        singleClass.aggregations.rating / singleClass.aggregations.numRatings > rating
+                        singleClass.aggregations.cumRating / singleClass.aggregations.numRatings > rating
                           ? 'text-yellow-400'
                           : 'text-gray-300',
                         'h-5 w-5 flex-shrink-0',
@@ -47,7 +47,7 @@ export default function SingleClassView({
                   ))}
                 </div>
                 <p className="sr-only">
-                  {singleClass.aggregations.rating / singleClass.aggregations.numRatings} out of 5 stars
+                  {singleClass.aggregations.cumRating / singleClass.aggregations.numRatings} out of 5 stars
                 </p>
               </div>
               <p className="ml-2 text-sm text-gray-900">Based on {singleClass.aggregations.numRatings} reviews</p>
@@ -132,9 +132,9 @@ export default function SingleClassView({
                 p?.avgRating ? (
                   <A
                     key={p?.id}
-                    href={`https://www.ratemyprofessors.com/search/teachers?sid=${p?.schoolId}&query=${p?.firstName}+${p?.lastName}`}>
+                    href={`https://www.ratemyprofessors.com/search/teachers?sid=${p?.school.rmpId}&query=${p?.firstName}+${p?.lastName}`}>
                     <span className="underline">
-                      {p?.firstName} {p?.lastName}
+                      {capitalize(`${p?.firstName} ${p?.lastName}`)}
                     </span>{' '}
                     has a <span className="font-semibold">{p?.avgRating}</span> on RMP
                   </A>
@@ -187,7 +187,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     where: { id: String(context.params.id) },
     include: {
       subject: true,
-      sections: true,
+      sections: {
+      	include: {
+	  teachers: {
+	    include: {
+	      school: true,
+	    }
+	  }
+	}
+      },
       aggregations: true,
       comments: {
         include: { user: { select: { image: true, name: true } } },
@@ -196,6 +204,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     },
   });
+
+  const professors = singleClass.sections.flatMap(s => s.teachers);
 
   // const professors = await Promise.all(
   //   Array.from(
@@ -237,29 +247,30 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   //     .filter(p => p !== null),
   // );
 
-  singleClass.comments.forEach(c => {
+  singleClass.comments?.forEach(c => {
     c.user.name = c.user.name
       .split(' ')
       .map(n => n[0])
       .join('');
   });
 
-  if (!singleClass?.aggregations?.numRatings) {
-    singleClass.aggregations = {
-      numRatings: 0,
-      rating: 0,
-      difficulty: 0,
-      wouldRecommend: 0,
-      totalFive: 0,
-      totalFour: 0,
-      totalThree: 0,
-      totalTwo: 0,
-      totalOne: 0,
-    } as ClassAggregations;
-  }
+  // if (!singleClass?.aggregations?.numRatings) {
+  //   singleClass.aggregations = {
+  //     numRatings: 0,
+  //     rating: 0,
+  //     difficulty: 0,
+  //     wouldRecommend: 0,
+  //     totalFive: 0,
+  //     totalFour: 0,
+  //     totalThree: 0,
+  //     totalTwo: 0,
+  //     totalOne: 0,
+  //     class: { connect: { id: singleClass.id } },
+  //   } as ClassAggregations;
+  // }
 
   return {
-    props: { singleClass: cloneDeep(singleClass), professors: cloneDeep([]) },
+    props: { singleClass: cloneDeep(singleClass), professors: cloneDeep(professors) },
   };
 }
 
